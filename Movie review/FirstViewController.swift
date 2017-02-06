@@ -13,7 +13,7 @@ import AFNetworking
 
 class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDelegate, UISearchBarDelegate
     
-{         var filteredMovies = [NSDictionary]()
+{   var filteredMovies = [NSDictionary]()
     var searchController = UISearchController()
     
     var refreshControl = UIRefreshControl()
@@ -24,7 +24,7 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
     @IBOutlet var tableView: UITableView!
     
     @IBOutlet var movietitle: UILabel!
-    
+    var isSearching = false
     @IBOutlet var progressView: UIProgressView!
     
     
@@ -109,7 +109,7 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
                         with: data, options:[]) as? NSDictionary {
                             NSLog("response: \(responseDictionary)")
                             self.movies = responseDictionary["results"] as? [NSDictionary]
-                            
+                            self.filteredMovies = self.movies!
                             self.tableView.reloadData()
                     }
                 }
@@ -119,11 +119,19 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        self.view.endEditing(true)
+        searchBar.showsCancelButton = false
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        
+        isSearching = false
+        
+        // Show all movies again
+        filteredMovies = movies!
+        tableView.reloadData()
     }
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+   /* func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let textInput: String = searchBar.text!
-        for i in 0...self.movies!.count {
+        for i in( 0..<movies!.count) {
             let movie = movies?[i]
             let movieName = movie?["title"] as! String
             let filteredMovieName = movieName.substring(to: movieName.characters.index(movieName.startIndex, offsetBy: textInput.characters.count))
@@ -137,8 +145,27 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
         if searchBar.text! == "" {
             retriveData()
         }
+    }*/        func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+      
+            filteredMovies = (searchText.isEmpty ? movies : movies?.filter({(movie: NSDictionary) -> Bool in
+                // If dataItem matches the searchText, return true to include it
+                let title = movie["title"] as! String
+                
+                return title.range(of: searchText, options: .caseInsensitive) != nil
+            }))!
+            
+            //self.lowResolutionImages = [UIImage?](repeating: nil, count: (filteredMovies?.count)!)
+            //self.highResolutionImages = [UIImage?](repeating: nil, count: (filteredMovies?.count)!)
+            
+            
+            
+            // Reload the collectionView now that there is new data
+            self.tableView.reloadData()
+        }
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        self.searchBar.showsCancelButton = true
+        isSearching = true
     }
-    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -149,8 +176,8 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
             
         }
         else{
-            if let movies = movies{
-                return movies.count
+            if filteredMovies.count != nil{
+                return filteredMovies.count
             }
             
             
@@ -169,7 +196,7 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         //EZLoadingActivity.hide(success: true, animated: false)
         let cell = tableView.dequeueReusableCell(withIdentifier: "movieCell") as! movieCellController
-        let movie = movies![indexPath.row]
+        let movie = filteredMovies[indexPath.row]
         let title = movie["title"] as! String
         let overview = movie["overview"] as! String
         let posterPath = movie["poster_path"] as! String
@@ -208,20 +235,11 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
         return cell
         
     }
-    // var movietitle = ""
-    //var relasedate = ""
-    //var popularity:NSNumber = 0.0
-    //var vote_average:NSNumber = 0.0
-    // var votecount:NSNumber = 0
-    //var overview = ""
-    //var posterPath = ""
-    //var baseURL = ""
-    
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         
-        let movie = movies![indexPath.row]
+        let movie = filteredMovies[indexPath.row]
         movietitleText = movie["title"] as! String
         relasedate = movie["release_date"] as! String
         popularity = movie["popularity"] as! NSNumber
