@@ -8,12 +8,34 @@
 
 import UIKit
 import AFNetworking
-
+import SFFocusViewLayout
 //import AlgoliaSearch-Client-Swift
 
 class BoxViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate{
     
+    @IBInspectable open var standardHeight: CGFloat = 100
     
+    /**
+     Featured height for focused cell.
+     
+     By default, this property is set to `280`.
+     
+     - Parameter focusedHeight:     The expanded height
+     - Warning: this property must be greater than standardHeight
+     */
+    
+    @IBInspectable open var focusedHeight: CGFloat = 280
+    
+    
+    /**
+     Drag Offset is the amount the user needs to scroll before
+     the featured cell changes.
+     
+     By default, this property is set to `180`.
+     
+     - Parameter dragOffset:    The amount user needs to change cell
+     */
+    @IBInspectable open var dragOffset: CGFloat = 180
     @IBOutlet var boxView: UICollectionView!
     var movies: [NSDictionary]?
     var refreshControl = UIRefreshControl()
@@ -23,6 +45,7 @@ class BoxViewController: UIViewController, UICollectionViewDataSource, UICollect
         // Search controller
         boxView.delegate = self
         boxView.dataSource = self
+
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = URL(string:"https://api.themoviedb.org/3/movie/top_rated?api_key=\(apiKey)")
         let request = URLRequest(url: url!)
@@ -73,7 +96,6 @@ class BoxViewController: UIViewController, UICollectionViewDataSource, UICollect
         return 0
     }
     
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = boxView.dequeueReusableCell(withReuseIdentifier: "CollectionCell", for: indexPath) as! CollectionCell
         let movie = movies![indexPath.row]
@@ -85,6 +107,8 @@ class BoxViewController: UIViewController, UICollectionViewDataSource, UICollect
         cell.movieImage.setImageWith(imageURL!)
         // cell.
         cell.labelTitle.text = title
+
+        
         //cell.textView1.text = overview
         //-----below is code for fade in
       //  let imageUrl = imageURL
@@ -115,7 +139,6 @@ class BoxViewController: UIViewController, UICollectionViewDataSource, UICollect
         
         return cell
     }
-    
     
    /* func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         EZLoadingActivity.hide(success: true, animated: true)

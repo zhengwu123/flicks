@@ -14,13 +14,16 @@ PODS:
   - AFNetworking/Serialization (3.0.4)
   - AFNetworking/UIKit (3.0.4):
     - AFNetworking/NSURLSession
+  - SFFocusViewLayout (3.1.0)
 
 DEPENDENCIES:
   - AFNetworking
+  - SFFocusViewLayout (~> 3.0)
 
 SPEC CHECKSUMS:
   AFNetworking: a0075feb321559dc78d9d85b55d11caa19eabb93
+  SFFocusViewLayout: 8524435eb57796adf3e7be1395c4e3786cd76dcc
 
-PODFILE CHECKSUM: 9adbc32e977fa1632c749951a5bda8bbce3ca85f
+PODFILE CHECKSUM: bac90c8355959791a14d6b6199881b4ee79d41bd
 
 COCOAPODS: 1.1.1

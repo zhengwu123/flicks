@@ -1,0 +1,11 @@
+language: objective-c
+os: osx
+osx_image: xcode8.1
+
+script:
+- set -o pipefail 
+- xcodebuild clean test -workspace SFFocusViewLayout.xcworkspace -scheme SFFocusViewLayout -destination "platform=iOS Simulator,name=iPhone 7" -enableCodeCoverage YES | xcpretty
+- pod lib lint --quick
+
+after_success:
+- bash <(curl -s https://codecov.io/bash)

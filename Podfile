@@ -5,5 +5,6 @@ use_frameworks!
 
 target 'Movie review' do
 pod 'AFNetworking'
+pod 'SFFocusViewLayout', '~> 3.0'
 end
 

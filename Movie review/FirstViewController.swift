@@ -25,6 +25,7 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
     
     @IBOutlet var movietitle: UILabel!
     
+    @IBOutlet var progressView: UIProgressView!
     
     
     
@@ -37,6 +38,7 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
     var  posterPath = ""
     var baseURL = ""
     var imageURL :URL!
+    var progressBarTimer:Timer!
     
     
     @IBOutlet var searchBar: UISearchBar!
@@ -46,7 +48,7 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
+        self.progressBarTimer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: Selector(("updateProgressBar")), userInfo: nil, repeats: true)
         //EZLoadingActivity.show("Loading...", disableUI: true)
         self.tabBarController?.tabBar.backgroundColor = UIColor.blue
         self.tabBarController?.tabBar.tintColor = UIColor.brown
@@ -74,6 +76,15 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
         self.tableView.addSubview(refreshControl)
         refreshControl.addTarget(self, action: #selector(FirstViewController.reload), for: UIControlEvents.valueChanged)
         
+        
+    }
+    
+    func updateProgressBar(){
+        self.progressView.progress += 0.1
+        if(self.progressView.progress == 1.0)
+        {
+            self.progressView.removeFromSuperview()
+        }
         
     }
     override func viewDidDisappear(_ animated: Bool) {
@@ -113,8 +124,8 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let textInput: String = searchBar.text!
         for i in 0...self.movies!.count {
-            let movie = movies![i]
-            let movieName = movie["title"] as! String
+            let movie = movies?[i]
+            let movieName = movie?["title"] as! String
             let filteredMovieName = movieName.substring(to: movieName.characters.index(movieName.startIndex, offsetBy: textInput.characters.count))
             if (textInput == filteredMovieName) {
                 continue
@@ -208,7 +219,7 @@ class FirstViewController: UIViewController, UITableViewDataSource,UITableViewDe
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+
         
         let movie = movies![indexPath.row]
         movietitleText = movie["title"] as! String

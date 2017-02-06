@@ -21,6 +21,7 @@ class detialViewController: UIViewController, UITextViewDelegate{
     @IBOutlet  var DetailImage: UIImageView!
     
     
+    @IBOutlet var hideButton: UIBarButtonItem!
     var popularityLabelText: String!
     var movieTitleText: String!
     var releaseDateText: String!
@@ -29,6 +30,28 @@ class detialViewController: UIViewController, UITextViewDelegate{
     var detailedLabelText: String!
     var DetailImageURL: URL!
     
+    @IBAction func Onhidebutton(_ sender: Any) {
+        
+        if hideButton.title == "hide"{
+        hideButton.title = "show"
+            self.myview.isHidden = true
+        }
+        else{
+            hideButton.title = "hide"
+            self.myview.isHidden = false
+        }
+    }
+    
+    @IBOutlet var myview: UIView!
+    
+    @IBOutlet var MnameLabel: UILabel!
+    
+    @IBOutlet var MvavgLabel: UILabel!
+    
+    @IBOutlet var MpopularityLabel: UILabel!
+    
+    @IBOutlet var DescriptionLabel: UILabel!
+    @IBOutlet var releaseDateLabel: UILabel!
     @IBOutlet var viewOutLet: UIView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +59,8 @@ class detialViewController: UIViewController, UITextViewDelegate{
         scrollViewOutput.contentSize.height = 800
         scrollViewOutput.contentSize.width = self.scrollViewOutput.frame.width
         /*CGSize(width:scrollViewOutput.frame.width, height: viewOutLet.frame.origin.y + viewOutLet.frame.size.height)*/
+        myview.layer.cornerRadius = 8.0
+        myview.clipsToBounds = true
         
         
         self.detailedLabel.text = detailedLabelText
@@ -46,7 +71,11 @@ class detialViewController: UIViewController, UITextViewDelegate{
         //self.vote_averageLabel.text = vote_averageLabelText
         //self.releaseDate.text = releaseDateText
         //self.popularityLabel.text = popularityLabelText
-        
+        self.MnameLabel.text = movieTitleText
+        self.MvavgLabel.text = vote_averageLabelText
+        self.MpopularityLabel.text = popularityLabelText
+        self.DescriptionLabel.text = detailedLabelText
+        self.releaseDateLabel.text = releaseDateText
         
         
         
